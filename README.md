@@ -9,7 +9,23 @@ Application macOS de barre de menus qui verrouille la session lorsque l'iPhone a
 - macOS 13 Ventura ou suivant
 - Swift 6 (Xcode ou Command Line Tools)
 
-## Construire et lancer
+## Installer
+
+Après avoir cloné le projet :
+
+```bash
+scripts/package.sh
+```
+
+Le script construit l'app en release, l'installe dans `/Applications` (ou `~/Applications` sans droit d'écriture), remplace une version déjà installée et la lance. Options : `--no-launch`, `--dest <dossier>`, `--uninstall`.
+
+L'app est signée en ad hoc : macOS peut redemander l'autorisation Bluetooth après chaque réinstallation. Pour conserver les autorisations, indiquer une identité de signature du trousseau :
+
+```bash
+MACGUARDIAN_SIGN_IDENTITY="Apple Development: Prénom Nom (XXXXXXXXXX)" scripts/package.sh
+```
+
+## Construire et lancer (développement)
 
 ```bash
 scripts/build-app.sh
@@ -22,6 +38,14 @@ open build/MacGuardian.app
 Le script assemble `build/MacGuardian.app` (avec l'`Info.plist` qui déclare l'usage du Bluetooth) et le signe en ad hoc. L'exécutable lancé hors bundle (`swift run`) est arrêté par macOS au premier accès Bluetooth.
 
 Au premier lancement, macOS demande l'autorisation d'utiliser le Bluetooth.
+
+### Icône
+
+L'icône (`Resources/AppIcon.icns`) est dessinée par code dans `scripts/make-icon.swift`. Pour la régénérer après modification :
+
+```bash
+swift scripts/make-icon.swift build/AppIcon.iconset && iconutil -c icns build/AppIcon.iconset -o Resources/AppIcon.icns
+```
 
 ## Tests
 
