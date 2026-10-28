@@ -5,7 +5,8 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 plugins="$(dirname "$(xcrun --find swift)")/../lib/swift/host/plugins/testing"
-if [[ -d "$plugins" ]]; then
+# Avec Xcode (poste de dev ou CI GitHub), SwiftPM trouve le plugin seul.
+if [[ "$(xcode-select -p)" == *CommandLineTools* && -d "$plugins" ]]; then
     swift test -Xswiftc -plugin-path -Xswiftc "$plugins" "$@"
 else
     swift test "$@"

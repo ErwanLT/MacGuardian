@@ -1,5 +1,7 @@
 # MacGuardian
 
+[![CI](https://github.com/ErwanLT/MacGuardian/actions/workflows/ci.yml/badge.svg)](https://github.com/ErwanLT/MacGuardian/actions/workflows/ci.yml)
+
 Application macOS de barre de menus qui verrouille la session lorsque l'iPhone associé semble s'éloigner du Mac, sans application compagnon. Voir la [spécification](doc/spec.md).
 
 > Outil de confort, pas une garantie de sécurité : il réduit le risque d'oublier de verrouiller son Mac.
@@ -10,6 +12,12 @@ Application macOS de barre de menus qui verrouille la session lorsque l'iPhone a
 - Swift 6 (Xcode ou Command Line Tools)
 
 ## Installer
+
+### Depuis une release
+
+Télécharger le DMG de la [dernière release](https://github.com/ErwanLT/MacGuardian/releases/latest) et suivre les instructions de la page : l'application n'étant pas signée avec un certificat Apple Developer, macOS demande de confirmer son ouverture au premier lancement.
+
+### Depuis les sources
 
 Après avoir cloné le projet :
 
@@ -54,6 +62,21 @@ scripts/test.sh
 ```
 
 Le script ajoute le chemin du plugin de macros de Swift Testing, que `swift test` ne trouve pas seul avec les Command Line Tools.
+
+## Intégration continue et releases
+
+- **CI** (`.github/workflows/ci.yml`) : tests et construction de l'app à chaque push sur `main` et sur chaque pull request.
+- **Release** (`.github/workflows/release.yml`) : à chaque tag `v*`, construit un binaire universel (Apple Silicon et Intel) et publie le DMG, le ZIP et les sommes SHA-256 dans une GitHub Release. Un tag avec suffixe (`v1.1.0-beta.1`) crée une pré-release.
+
+```bash
+git tag v0.1.0 && git push origin v0.1.0
+```
+
+Pour produire les mêmes fichiers en local (dans `dist/`) :
+
+```bash
+scripts/make-release.sh 0.1.0
+```
 
 ## Utilisation
 

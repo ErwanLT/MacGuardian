@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Tests et build
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Version de Swift
+        run: swift --version
+
+      - name: Tests
+        run: scripts/test.sh
+
+      - name: Construction de l'application
+        run: scripts/build-app.sh release
+
+      - name: Vérification du bundle
+        run: |
+          codesign --verify --strict build/MacGuardian.app
+          plutil -lint build/MacGuardian.app/Contents/Info.plist
+          test -f build/MacGuardian.app/Contents/Resources/AppIcon.icns
